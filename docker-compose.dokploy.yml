@@ -44,7 +44,7 @@ services:
       - mysql
       - redis
     networks:
-      - diagpro-network
+      - dokploy-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
       interval: 30s
@@ -65,7 +65,13 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - diagpro-network
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     
   # Redis Cache
   redis:
@@ -76,7 +82,12 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - diagpro-network
+      - dokploy-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     
 volumes:
   mysql_data:
@@ -86,6 +97,46 @@ volumes:
   storage_data:
     driver: local
 
+# Laravel Scheduler (cron every minute)
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: diagpro-scheduler
+    restart: unless-stopped
+    entrypoint: ["sh", "-c"]
+    command: ["while true; do php /var/www/artisan schedule:run --no-interaction >> /dev/null 2>&1; sleep 60; done"]
+    environment:
+      - APP_NAME=${APP_NAME:-Diagpro}
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_KEY=${APP_KEY}
+      - APP_URL=${APP_URL:-http://localhost}
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=${DB_DATABASE:-diagpro}
+      - DB_USERNAME=${DB_USERNAME:-diagpro}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - CONTAINER_ROLE=scheduler
+    depends_on:
+      - app
+      - mysql
+      - redis
+    networks:
+      - dokploy-network
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  storage_data:
+    driver: local
+
 networks:
-  diagpro-network:
-    driver: bridge
+  dokploy-network:
+    external: true
