@@ -55,7 +55,7 @@ services:
     image: mysql:8.0
     container_name: diagpro-mysql
     restart: unless-stopped
-    command: --default-authentication-plugin=mysql_native_password --skip-name-resolve --init-file=/docker-entrypoint-initdb.d/fix-auth.sql
+    command: --default-authentication-plugin=mysql_native_password --skip-name-resolve
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE:-diagpro}
@@ -64,7 +64,6 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
-      - ./docker/mysql/init-fix-auth.sql:/docker-entrypoint-initdb.d/fix-auth.sql:ro
     networks:
       - dokploy-network
     healthcheck:
