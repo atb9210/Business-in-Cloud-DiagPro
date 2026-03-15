@@ -1,12 +1,11 @@
 # Docker Compose ottimizzato per Dokploy
-# Include: App Laravel + MySQL + Redis in un unico stack
+# Include: App Laravel + MySQL + Redis + Scheduler
 
 services:
-  # Laravel Application (Nginx + PHP-FPM)
   app:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: Dockerfile
       target: production
     container_name: diagpro-app
     restart: unless-stopped
@@ -36,7 +35,6 @@ services:
       - BROADCAST_DRIVER=log
       - CONTAINER_ROLE=app
       - DB_SEED=${DB_SEED:-false}
-      - FILAMENT_DOMAIN=${FILAMENT_DOMAIN:-localhost}
       - FILAMENT_PATH=${FILAMENT_PATH:-admin}
     volumes:
       - storage_data:/var/www/storage
@@ -46,13 +44,12 @@ services:
     networks:
       - dokploy-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
 
-  # MySQL Database
   mysql:
     image: mysql:8.0
     container_name: diagpro-mysql
@@ -72,8 +69,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    
-  # Redis Cache
+
   redis:
     image: redis:7-alpine
     container_name: diagpro-redis
@@ -88,28 +84,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-    
-volumes:
-  mysql_data:
-    driver: local
-  redis_data:
-    driver: local
-  storage_data:
-    driver: local
 
-# Laravel Scheduler (cron every minute)
   scheduler:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     container_name: diagpro-scheduler
     restart: unless-stopped
     entrypoint: ["sh", "-c"]
     command: ["while true; do php /var/www/artisan schedule:run --no-interaction >> /dev/null 2>&1; sleep 60; done"]
     environment:
-      - APP_NAME=${APP_NAME:-Diagpro}
       - APP_ENV=${APP_ENV:-production}
-      - APP_DEBUG=${APP_DEBUG:-false}
       - APP_KEY=${APP_KEY}
       - APP_URL=${APP_URL:-http://localhost}
       - DB_CONNECTION=mysql
