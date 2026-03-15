@@ -28,8 +28,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - CACHE_STORE=redis
-      - SESSION_DRIVER=redis
+      - CACHE_STORE=file
+      - SESSION_DRIVER=file
       - QUEUE_CONNECTION=sync
       - FILESYSTEM_DISK=local
       - BROADCAST_DRIVER=log
