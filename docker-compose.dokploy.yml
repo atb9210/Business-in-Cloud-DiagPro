@@ -34,6 +34,7 @@ services:
       - FILESYSTEM_DISK=local
       - BROADCAST_DRIVER=log
       - CONTAINER_ROLE=app
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - DB_SEED=${DB_SEED:-false}
       - FILAMENT_PATH=${FILAMENT_PATH:-admin}
     volumes:
