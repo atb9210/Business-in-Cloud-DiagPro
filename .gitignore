@@ -1,6 +1,6 @@
 *.log
 .DS_Store
-.env
+# .env  # Commented for Dokploy
 .env.backup
 .env.production
 .phpactor.json
