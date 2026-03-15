@@ -10,6 +10,7 @@ use Carbon\Carbon;
 
 class OrdiniStatsWidget extends BaseWidget
 {
+    protected static ?string $pollingInterval = null;
     protected int | string | array $columnSpan = 'full';
     
     protected function getStats(): array
@@ -27,7 +28,7 @@ class OrdiniStatsWidget extends BaseWidget
         
         // Calcolo del profitto (margine totale)
         $totaleProfitto = $ordiniQuery->get()->sum(function ($ordine) {
-            return $ordine->prezzo_vendita - ($ordine->costo_marketing + $ordine->costo_prodotto + $ordine->costo_spedizione + $ordine->altri_costi);
+            return ($ordine->prezzo_vendita ?? 0) - (($ordine->costo_marketing ?? 0) + ($ordine->costo_prodotto ?? 0) + ($ordine->costo_spedizione ?? 0) + ($ordine->altri_costi ?? 0));
         });
         
         // Calcolo del margine percentuale

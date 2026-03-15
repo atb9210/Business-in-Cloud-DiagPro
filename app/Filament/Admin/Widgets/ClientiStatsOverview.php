@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 class ClientiStatsOverview extends BaseWidget
 {
+    protected static ?string $pollingInterval = null;
     protected function getStats(): array
     {
         $totalClienti = Cliente::count();
@@ -27,7 +28,7 @@ class ClientiStatsOverview extends BaseWidget
                 ->color('info'),
             
             Stat::make('Ultimo Cliente', $ultimoCliente ? $ultimoCliente->nome : 'Nessuno')
-                ->description($ultimoCliente ? 'Aggiunto il ' . $ultimoCliente->created_at->format('d/m/Y') : '')
+                ->description($ultimoCliente && $ultimoCliente->created_at ? 'Aggiunto il ' . $ultimoCliente->created_at->format('d/m/Y') : '')
                 ->descriptionIcon('heroicon-m-user-plus')
                 ->color('primary'),
         ];

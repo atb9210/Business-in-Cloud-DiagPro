@@ -8,6 +8,7 @@ use Carbon\Carbon;
 
 class ClientiChart extends ChartWidget
 {
+    protected static ?string $pollingInterval = null;
     protected static ?string $heading = 'Andamento Nuovi Clienti';
 
     protected function getData(): array

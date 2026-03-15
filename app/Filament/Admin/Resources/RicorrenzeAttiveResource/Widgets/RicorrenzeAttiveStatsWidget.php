@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class RicorrenzeAttiveStatsWidget extends BaseWidget
 {
+    protected static ?string $pollingInterval = null;
     protected function getStats(): array
     {
         // Totale ricorrenze attive

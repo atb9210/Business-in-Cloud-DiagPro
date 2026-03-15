@@ -9,6 +9,7 @@ use Illuminate\Support\Number;
 
 class CampagnaStatsWidget extends BaseWidget
 {
+    protected static ?string $pollingInterval = null;
     protected function getStats(): array
     {
         // Calcoli per le metriche

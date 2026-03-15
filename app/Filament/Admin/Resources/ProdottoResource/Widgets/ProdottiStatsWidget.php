@@ -8,6 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class ProdottiStatsWidget extends BaseWidget
 {
+    protected static ?string $pollingInterval = null;
     protected function getStats(): array
     {
         // Calcola le metriche solo per prodotti fisici attivi (esclude servizi e prodotti non attivi)

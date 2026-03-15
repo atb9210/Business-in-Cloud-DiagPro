@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class AttivazioniChartWidget extends ChartWidget
 {
+    protected static ?string $pollingInterval = null;
     protected static ?string $heading = 'Andamento Ultimi 12 Mesi';
     
     protected static ?int $sort = 2;
