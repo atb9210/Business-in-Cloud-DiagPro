@@ -82,6 +82,13 @@ fi
 # Storage link
 php artisan storage:link --force 2>/dev/null || true
 
+# --- Fix MySQL auth plugin ---
+echo "  Fixing MySQL auth plugin for ${DB_USERNAME}..."
+mysql -h"$DB_HOST" -uroot -p"${DB_ROOT_PASSWORD:-rootpassword}" \
+    -e "ALTER USER '${DB_USERNAME}'@'%' IDENTIFIED WITH mysql_native_password BY '${DB_PASSWORD}'; FLUSH PRIVILEGES; SET GLOBAL host_cache_size=0;" \
+    2>&1 | grep -v "^$" || true
+echo "  MySQL auth plugin step done."
+
 # --- Migrations ---
 echo "[5/7] Running migrations..."
 mysql -h"$DB_HOST" -uroot -p"${DB_ROOT_PASSWORD:-rootpassword}" -e "SET GLOBAL FOREIGN_KEY_CHECKS=0;" 2>/dev/null || true
