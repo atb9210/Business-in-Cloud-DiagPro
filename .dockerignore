@@ -1,104 +1,52 @@
-# Git
 .git
 .gitignore
 .gitattributes
-
-# Documentation
-README.md
-*.md
-docs/
+.github/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 
-# Laravel
-/node_modules
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
+# Dependencies (rebuilt in Docker)
+node_modules/
+vendor/
+
+# Environment (use .env.docker via env_file)
 .env
 .env.backup
+.env.local
 .env.production
+.env.test
+
+# Laravel dev artifacts
+/public/hot
+/storage/*.key
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
+Homestead.*
 npm-debug.log
 yarn-error.log
 
+# Tests (not needed in production)
+tests/
+phpunit.xml
+
 # Logs
 *.log
-logs/
+docker/logs/
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-
-# nyc test coverage
-.nyc_output
-
-# Dependency directories
-node_modules/
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-.env.test
-.env.local
-.env.production
-
-# Composer
-/vendor/
-composer.phar
-
-# PHPUnit
-.phpunit.result.cache
-/coverage/
-
-# Deployment
-.vercel/
-
-# Docker
+# Docker meta
 docker-compose.override.yml
-*.dockerfile
+docker-compose.dokploy.yml
+.env.dokploy
+deploy.sh
 
-# Temporary files
-*.tmp
-*.temp
-
-# Cache
-.cache/
-
-# Build artifacts
-build/
-dist/
+# Docs
+README.md
+docs/
+CHANGELOG.md

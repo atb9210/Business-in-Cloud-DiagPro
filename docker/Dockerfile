@@ -93,7 +93,7 @@ COPY --from=composer-deps /app/vendor vendor/
 
 # Copy application code
 COPY . .
-# NOTE: .env is NOT baked in — env variables come from Dokploy/docker-compose at runtime
+COPY .env.docker .env
 
 # Copy built frontend assets from stage 2
 COPY --from=node-build /app/public/build public/build/
