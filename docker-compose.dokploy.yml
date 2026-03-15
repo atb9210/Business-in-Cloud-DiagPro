@@ -6,7 +6,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
       target: production
     container_name: diagpro-app
     restart: unless-stopped
