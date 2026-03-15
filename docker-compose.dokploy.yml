@@ -87,6 +87,23 @@ services:
       timeout: 5s
       retries: 3
 
+  mysql-fix:
+    image: mysql:8.0
+    container_name: diagpro-mysql-fix
+    restart: "no"
+    entrypoint: ["sh", "/fix-auth.sh"]
+    volumes:
+      - ./docker/mysql/fix-auth.sh:/fix-auth.sh:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME:-diagpro}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - dokploy-network
+
   scheduler:
     build:
       context: .

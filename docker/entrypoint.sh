@@ -83,9 +83,15 @@ fi
 php artisan storage:link --force 2>/dev/null || true
 
 # --- Fix MySQL auth plugin (caching_sha2_password -> mysql_native_password) ---
-mysql -h"$DB_HOST" -uroot -p"${DB_ROOT_PASSWORD:-rootpassword}" \
+echo "  Fixing MySQL auth plugin for ${DB_USERNAME}..."
+ALTER_RESULT=$(mysql -h"$DB_HOST" -uroot -p"${DB_ROOT_PASSWORD:-rootpassword}" \
     -e "ALTER USER '${DB_USERNAME}'@'%' IDENTIFIED WITH mysql_native_password BY '${DB_PASSWORD}'; FLUSH PRIVILEGES; SET GLOBAL host_cache_size=0;" \
-    2>/dev/null || true
+    2>&1)
+if [ $? -eq 0 ]; then
+    echo "  MySQL auth plugin fixed successfully."
+else
+    echo "  WARNING: Could not fix MySQL auth plugin: $ALTER_RESULT"
+fi
 
 # --- Migrations ---
 echo "[5/7] Running migrations..."
