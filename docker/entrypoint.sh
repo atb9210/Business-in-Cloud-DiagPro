@@ -82,29 +82,6 @@ fi
 # Storage link
 php artisan storage:link --force 2>/dev/null || true
 
-# --- Fix MySQL auth plugin (use PHP PDO which handles caching_sha2_password) ---
-echo "  Fixing MySQL auth plugin for ${DB_USERNAME}..."
-php -r "
-try {
-    \$pdo = new PDO(
-        'mysql:host=' . getenv('DB_HOST') . ';port=' . (getenv('DB_PORT') ?: '3306'),
-        'root',
-        getenv('DB_ROOT_PASSWORD') ?: 'rootpassword',
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
-    \$user = getenv('DB_USERNAME') ?: 'diagpro';
-    \$pass = getenv('DB_PASSWORD') ?: '';
-    \$pdo->exec(\"ALTER USER '\$user'@'%' IDENTIFIED WITH mysql_native_password BY '\$pass'\");
-    \$pdo->exec('FLUSH PRIVILEGES');
-    \$pdo->exec('SET GLOBAL host_cache_size=0');
-    echo 'OK: auth plugin fixed to mysql_native_password';
-} catch (Exception \$e) {
-    echo 'WARNING: ' . \$e->getMessage();
-}
-" 2>&1
-echo ""
-echo "  MySQL auth plugin step done."
-
 # --- Migrations ---
 echo "[5/7] Running migrations..."
 mysql -h"$DB_HOST" -uroot -p"${DB_ROOT_PASSWORD:-rootpassword}" -e "SET GLOBAL FOREIGN_KEY_CHECKS=0;" 2>/dev/null || true
