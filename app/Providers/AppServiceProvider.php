@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use App\Providers\LivewireOverrideServiceProvider;
+use App\Database\RetryMySqlConnector;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(LivewireOverrideServiceProvider::class);
+
+        $this->app->bind('db.connector.mysql', function () {
+            return new RetryMySqlConnector();
+        });
     }
 
     /**

@@ -44,7 +44,6 @@ services:
       - redis
     networks:
       - dokploy-network
-      - internal
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/up"]
       interval: 30s
@@ -66,7 +65,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
     networks:
-      - internal
+      - dokploy-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
       interval: 10s
@@ -82,7 +81,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - internal
+      - dokploy-network
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
@@ -117,7 +116,7 @@ services:
       - mysql
       - redis
     networks:
-      - internal
+      - dokploy-network
 
 volumes:
   mysql_data:
@@ -130,5 +129,3 @@ volumes:
 networks:
   dokploy-network:
     external: true
-  internal:
-    driver: bridge
